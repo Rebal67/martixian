@@ -1,5 +1,5 @@
 const n = new CategoryService();
 
-n.fetch()
+n.fetch();
 
-console.log(n.categoriesTree)
+console.log(n.categories);
