@@ -23,6 +23,12 @@ class CategoryService {
                 id: 8,
                 children: [],
               },
+              {
+                parent: 4,
+                name: "aab",
+                children: [],
+                id: 17,
+              },
             ],
           },
           {
@@ -115,9 +121,7 @@ class CategoryService {
   getAllParents(node, parents = []) {
     const parent = this.findNode(node.parent);
     if (parent) {
-      // remove children and avoid mutation
-      const clone = (({ children, ...o }) => o)(parent);
-      parents.push(clone);
+      parents.push(parent);
       if (parent.parent) this.getAllParents(parent, parents);
     }
 

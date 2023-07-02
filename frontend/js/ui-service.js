@@ -47,24 +47,27 @@ class UiService {
 
   #selectListener(event) {
     const level = parseInt(event.target.dataset.level);
-
     const id = parseInt(event.target.value);
 
     const node = this.#categoryService.findNode(id);
-
     const parents = this.#categoryService.getAllParents(node).reverse();
     const children = this.#categoryService.getChildrenMappedByLevel(
       node.children,
       level
     );
-    const filteredCategories = [
-      parents,
-      [node],
-      ...Array.from(children.values()),
-    ].filter((el) => el);
 
+    const filteredCategories = [];
+    const currentFilteredNode =
+      parents[parents.length - 1]?.children ??
+      this.#categoryService.categories[0];
+
+    filteredCategories.push(...parents.map((parent) => [parent]));
+    filteredCategories.push(currentFilteredNode);
+    filteredCategories.push(...Array.from(children.values()).reverse());
     this.#categories = filteredCategories;
     this.#bootstrap();
+
+    this.#selects[level].value = id;
   }
 
   $hideOptions(select, optionsToKeep = []) {
@@ -73,7 +76,6 @@ class UiService {
   }
 
   $toggleDisableSelect(select, options = []) {
-    console.log(options);
     options.length > 0 ? (select.disabled = false) : (select.disabled = true);
     return;
   }
