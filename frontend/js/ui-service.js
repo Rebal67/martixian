@@ -86,4 +86,9 @@ class UiService {
     option.innerText = name;
     return option;
   }
+
+  reset() {
+    this.#categories = this.#categoryService.categories;
+    this.#bootstrap();
+  }
 }
