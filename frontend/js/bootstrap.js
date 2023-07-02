@@ -1,5 +1,3 @@
-const n = new CategoryService();
-
-n.fetch();
-
-console.log(n.categories);
+const categoryService = new CategoryService();
+const uiService = new UiService(categoryService);
+uiService.init();

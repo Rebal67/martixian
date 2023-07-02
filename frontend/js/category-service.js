@@ -11,17 +11,17 @@ class CategoryService {
         id: 1,
         name: "a",
         parent: null,
-        chidren: [
+        children: [
           {
             id: 4,
             name: "aa",
             parent: 1,
-            chidren: [
+            children: [
               {
                 parent: 4,
                 name: "aaa",
                 id: 8,
-                chidren: [],
+                children: [],
               },
             ],
           },
@@ -29,13 +29,20 @@ class CategoryService {
             id: 5,
             name: "ab",
             parent: 1,
-            chidren: [],
+            children: [
+              {
+                id: 12,
+                parent: 5,
+                name: "aba",
+                children: [],
+              },
+            ],
           },
           {
             id: 6,
             name: "ac",
             parent: 1,
-            chidren: [],
+            children: [],
           },
         ],
       },
@@ -43,12 +50,19 @@ class CategoryService {
         id: 2,
         name: "b",
         parent: null,
-        chidren: [
+        children: [
           {
             id: 7,
             name: "ba",
             parent: 2,
-            chidren: [],
+            children: [
+              {
+                id: 13,
+                parent: 7,
+                name: "baa",
+                children: [],
+              },
+            ],
           },
         ],
       },
@@ -56,19 +70,12 @@ class CategoryService {
         id: 3,
         name: "c",
         parent: null,
-        chidren: [],
+        children: [],
       },
     ];
 
-    this.#_categoriesMappedByLevel = this.#getChildrenMappedByLevel(
+    this.#_categoriesMappedByLevel = this.getChildrenMappedByLevel(
       this.#categoriesTree
-    );
-
-    console.log(
-      this.#getAllParents({
-        id: 8,
-        parent: 4,
-      })
     );
   }
 
@@ -79,14 +86,14 @@ class CategoryService {
    * @param {Map<number,Array<node>>} map - a map used to avoid mutation
    * @returns the tree mapped by level
    */
-  #getChildrenMappedByLevel(tree, baseLevel = 1, map = new Map()) {
+  getChildrenMappedByLevel(tree, baseLevel = 1, map = new Map()) {
     const nodes = tree.map((node) => {
-      if (node.chidren) {
+      if (node.children) {
         const l = baseLevel + 1;
-        this.#getChildrenMappedByLevel(node.chidren, l, map);
+        this.getChildrenMappedByLevel(node.children, l, map);
       }
       // removing children from object
-      const clone = (({ chidren, ...o }) => o)(node);
+      const clone = (({ children, ...o }) => o)(node);
       return clone;
     });
     if (nodes.length) {
@@ -105,12 +112,15 @@ class CategoryService {
    * @param {*} parents array used to save all parents of the node
    * @returns all parents of the given nodes
    */
-  #getAllParents(node, parents = []) {
-    const parent = this.#findNode(node.parent);
-    // remove children and avoid mutation
-    const clone = (({ chidren, ...o }) => o)(parent);
-    parents.push(clone);
-    if (parent.parent) this.#getAllParents(parent, parents);
+  getAllParents(node, parents = []) {
+    const parent = this.findNode(node.parent);
+    if (parent) {
+      // remove children and avoid mutation
+      const clone = (({ children, ...o }) => o)(parent);
+      parents.push(clone);
+      if (parent.parent) this.getAllParents(parent, parents);
+    }
+
     return parents;
   }
 
@@ -120,10 +130,16 @@ class CategoryService {
    * @param {categoriesTree} tree tree variable used for recursion
    * @returns the node with the given id
    */
-  #findNode(id, tree = this.#categoriesTree) {
+  findNode(id, tree = this.#categoriesTree) {
     for (const el of tree) {
-      if (el.id === id) return el;
-      if (el.chidren.length) return this.#findNode(id, el.chidren);
+      if (el.id === id) {
+        return el;
+      }
+
+      if (el.children.length) {
+        const found = this.findNode(id, el.children);
+        if (found) return found;
+      }
     }
   }
 
