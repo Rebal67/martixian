@@ -22,8 +22,9 @@ class UiService {
 
   createSelects() {
     const selects = [];
-    for (const [level, categories] of this.#categories) {
+    for (const [level, categories] of this.#categories.entries()) {
       const select = this.#createSelect(level, categories);
+      this.$hideOptions(select, categories);
       selects.push(select);
     }
     return selects;
@@ -56,27 +57,19 @@ class UiService {
       node.children,
       level
     );
-    console.log(this.#categories);
-    console.log([parents, Array.from(...children.values())]);
-    //TODO: split into 2 loops for readability
-    for (const [index, select] of this.#selects.entries()) {
-      if (index + 1 == level) continue;
-      const options =
-        index + 1 < level ? [parents[index]] : children.get(index);
-      console.log(options);
-      this.$hideOptions(select, options);
-    }
+    const filteredCategories = [
+      parents,
+      [node],
+      ...Array.from(children.values()),
+    ].filter((el) => el);
+
+    this.#categories = filteredCategories;
+    this.#bootstrap();
   }
 
   $hideOptions(select, optionsToKeep = []) {
     this.$toggleDisableSelect(select, optionsToKeep);
-
     if (optionsToKeep.length === 1) select.value = optionsToKeep[0].id;
-    console.log(optionsToKeep);
-    let options = select.getElementsByTagName("options");
-    for (const option of options) {
-      console.log(option);
-    }
   }
 
   $toggleDisableSelect(select, options = []) {

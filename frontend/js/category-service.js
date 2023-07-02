@@ -147,6 +147,6 @@ class CategoryService {
    * returns the mapped categories as an array reversing it to get the correct order
    */
   get categories() {
-    return Array.from(this.#_categoriesMappedByLevel.entries()).reverse();
+    return Array.from(this.#_categoriesMappedByLevel.values()).reverse();
   }
 }
