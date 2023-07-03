@@ -11,7 +11,7 @@ async function bootstrap() {
     .addCookieAuth('token')
     .addBearerAuth()
     .setDescription('Api to show tree for categories')
-    .setTitle('Rebal Api for Martixian')
+    .setTitle('Rebal Api for Matrixian')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
