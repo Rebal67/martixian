@@ -76,8 +76,16 @@ class UiService {
       level
     );
 
+    // array of selected values
     this.#selected = [...parents.map((parent) => parent.id), id];
+
+    /**
+     * i would have changed this to be using a model Class Category to make sure all
+     * types are the same inside the array, but i dont have much time for that
+     */
     const filteredCategories = [];
+
+    // current node data after filter
     const currentFilteredNode =
       parents[parents.length - 1]?.children ??
       this.#categoryService.categories[0];
