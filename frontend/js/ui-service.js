@@ -11,7 +11,7 @@ class UiService {
    * initiate the app and fetches the data
    */
   async init() {
-    this.#categoryService.fetch();
+    await this.#categoryService.fetch();
     this.#categories = this.#categoryService.categories;
     this.#bootstrap();
   }

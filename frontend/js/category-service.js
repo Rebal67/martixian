@@ -5,80 +5,10 @@ class CategoryService {
   /**
    *  fetches all the categories in tree structure from backend
    */
-  fetch() {
-    this.#categoriesTree = [
-      {
-        id: 1,
-        name: "a",
-        parent: null,
-        children: [
-          {
-            id: 4,
-            name: "aa",
-            parent: 1,
-            children: [
-              {
-                parent: 4,
-                name: "aaa",
-                id: 8,
-                children: [{ id: 32, parent: 8, name: "aaaa", children: [] }],
-              },
-              {
-                parent: 4,
-                name: "aab",
-                children: [],
-                id: 17,
-              },
-            ],
-          },
-          {
-            id: 5,
-            name: "ab",
-            parent: 1,
-            children: [
-              {
-                id: 12,
-                parent: 5,
-                name: "aba",
-                children: [],
-              },
-            ],
-          },
-          {
-            id: 6,
-            name: "ac",
-            parent: 1,
-            children: [],
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: "b",
-        parent: null,
-        children: [
-          {
-            id: 7,
-            name: "ba",
-            parent: 2,
-            children: [
-              {
-                id: 13,
-                parent: 7,
-                name: "baa",
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: "c",
-        parent: null,
-        children: [],
-      },
-    ];
+  async fetch() {
+    const result = await fetch("http://localhost:3000/categories/unprotected");
+    this.#categoriesTree = await result.json();
+    console.log(this.#categoriesTree);
 
     this.#_categoriesMappedByLevel = this.getChildrenMappedByLevel(
       this.#categoriesTree
@@ -119,10 +49,10 @@ class CategoryService {
    * @returns all parents of the given nodes
    */
   getAllParents(node, parents = []) {
-    const parent = this.findNode(node.parent);
+    const parent = this.findNode(node.parentId);
     if (parent) {
       parents.push(parent);
-      if (parent.parent) this.getAllParents(parent, parents);
+      if (parent.parentId) this.getAllParents(parent, parents);
     }
 
     return parents;

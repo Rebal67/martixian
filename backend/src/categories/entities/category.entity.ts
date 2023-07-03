@@ -12,4 +12,10 @@ export class Category extends UnsecureBaseEntity {
 
   @TreeParent()
   parent: Category;
+
+  @Column('integer', {
+    name: 'parentId',
+    nullable: true,
+  })
+  parentId: number;
 }
