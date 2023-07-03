@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  db: 
+    image: mariadb
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASS}
+      MARIADB_DATABASE: ${DATABASE_NAME}
+      MARIADB_PASSWORD: ${DATABASE_PASS}
+    ports:
+      - ${DATABASE_PORT}:3306
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: ${DATABASE_PORT}
+      PMA_USER: root
+      PMA_PASSWORD:  ${DATABASE_PASS}
+    ports:
+      - 8080:80
+volumes:
+  db: {}
