@@ -21,7 +21,7 @@ class CategoryService {
                 parent: 4,
                 name: "aaa",
                 id: 8,
-                children: [],
+                children: [{ id: 32, parent: 8, name: "aaaa", children: [] }],
               },
               {
                 parent: 4,

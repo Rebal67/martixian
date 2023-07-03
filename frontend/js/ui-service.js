@@ -2,6 +2,7 @@ class UiService {
   #categoryService;
   #categories;
   #selects;
+  #selected = [];
 
   constructor(categoryService) {
     this.#categoryService = categoryService;
@@ -24,7 +25,7 @@ class UiService {
     const selects = [];
     for (const [level, categories] of this.#categories.entries()) {
       const select = this.#createSelect(level, categories);
-      this.$hideOptions(select, categories);
+      this.$setSelected(select, level);
       selects.push(select);
     }
     return selects;
@@ -51,6 +52,7 @@ class UiService {
 
     const node = this.#categoryService.findNode(id);
     const parents = this.#categoryService.getAllParents(node).reverse();
+    this.#selected = [...parents.map((parent) => parent.id), id];
     const children = this.#categoryService.getChildrenMappedByLevel(
       node.children,
       level
@@ -70,14 +72,8 @@ class UiService {
     this.#selects[level].value = id;
   }
 
-  $hideOptions(select, optionsToKeep = []) {
-    this.$toggleDisableSelect(select, optionsToKeep);
-    if (optionsToKeep.length === 1) select.value = optionsToKeep[0].id;
-  }
-
-  $toggleDisableSelect(select, options = []) {
-    options.length > 0 ? (select.disabled = false) : (select.disabled = true);
-    return;
+  $setSelected(select, index) {
+    if (this.#selected[index]) select.value = this.#selected[index];
   }
 
   #createOption(value, name) {
@@ -89,6 +85,7 @@ class UiService {
 
   reset() {
     this.#categories = this.#categoryService.categories;
+    this.#selected = [];
     this.#bootstrap();
   }
 }
